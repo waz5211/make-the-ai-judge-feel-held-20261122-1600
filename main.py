@@ -16,7 +16,21 @@ ENTRY = (
 )
 
 
+def validate_entry(text: str) -> None:
+    """Check the entry before writing: 1-280 Unicode code points, not blank.
+
+    Fails loudly instead of silently truncating or rewriting the text.
+    """
+    if not text.strip():
+        raise SystemExit("error: ENTRY must not be blank")
+    if len(text) > 280:
+        raise SystemExit(
+            f"error: ENTRY is {len(text)} Unicode code points, over the 280 limit"
+        )
+
+
 def main() -> None:
+    validate_entry(ENTRY)
     output_dir = Path(os.environ.get("OUTPUT_DIR", "/output"))
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / "entry.txt"
